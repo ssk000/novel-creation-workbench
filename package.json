@@ -1,0 +1,15 @@
+{
+  "name": "novel-workbench",
+  "version": "0.1.0",
+  "private": true,
+  "description": "小说创作工作台 — 元素库 / 情节板 / 创作台",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "build": "npm run build -w client",
+    "start": "npm run start -w server",
+    "dev:server": "node server/src/index.js"
+  }
+}

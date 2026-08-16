@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.prebuild/
+server/data/
+.npm-cache/
+*.log
+.DS_Store
+.env
+
+# 启动器本地配置（含本机项目路径，勿提交）
+launcher/launcher-config.json
