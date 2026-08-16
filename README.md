@@ -2,6 +2,26 @@
 
 一个本地运行的独立 Web 应用，用于小说创作：**元素库 → 情节板 → 创作台** 三大模块协作，由大语言模型（本地或云 API）辅助撰写正文。
 
+## 界面预览
+
+| 书架 · 小说选择 | 元素库 |
+|---|---|
+| ![书架](docs/screenshots/01-home.png) | ![元素库](docs/screenshots/02-elements.png) |
+
+| 情节板（节点式画布） | 创作台 |
+|---|---|
+| ![情节板](docs/screenshots/03-plot.png) | ![创作台](docs/screenshots/04-studio.png) |
+
+| 模型设置 |
+|---|
+| ![模型设置](docs/screenshots/05-settings.png) |
+
+- **书架**：多部小说的管理入口，支持新建、载入示例、删除。
+- **元素库**：左侧按类型（角色 / 场景 / 物品 / 世界观 / 自定义类型）过滤，右侧卡片式管理，支持属性字段与标签。
+- **情节板**：左侧「章 → 节 → 场景」大纲树，中间 **React Flow 节点式画布**（章节/场景自动布局与连线），右侧场景详情（目标 / 冲突 / 视角 / 关联元素）。
+- **创作台**：左侧自动组装「关联元素 + 情节结构」上下文并可预览，流式生成正文（可停止、重写/续写），右侧草稿编辑器即时写回场景。
+- **模型设置**：Ollama / DeepSeek / OpenAI / Claude 多模型配置，支持连通性测试。
+
 ## 三大模块
 
 1. **书架 / 小说选择**：管理多部小说，进入某部小说的创作工作区。
@@ -28,7 +48,7 @@ npm start
 
 封装了一个 Electron 桌面启动器，双击即可启动/停止服务并自动打开浏览器，免命令行：
 
-- **便携版 EXE**：`launcher\dist\小说创作工作台-启动器.exe`（绿色免安装）
+- **便携版 EXE**：`launcher\dist\NovelWorkbench-Launcher.exe`（绿色免安装）
 - 源码运行：`cd launcher && npm install && npm start`
 - 重新打包：`cd launcher && npm run build:win`（图标来自 `build\icon.ico`，由 `make-icon.js` 生成）
 
@@ -55,6 +75,16 @@ npm start
   - `index.json`：小说列表
   - `novels/<id>.json`：每部小说的完整内容（元素、章节、场景、正文）
   - `settings.json`：模型配置（含 API Key）
+
+## 持续集成与 Release
+
+`.github/workflows/build.yml` 会在每次推送到 `main` 或 Pull Request 时自动构建，并在推送 `v*` 标签或手动触发时创建 GitHub Release 并附带便携版 EXE 产物：
+
+- 类型检查（非阻断）+ 前端构建（Rollup + Babel）
+- 构建启动器 EXE（electron-builder 便携版）
+- 每次构建都上传 EXE 工件；打 tag / 手动触发时发布 Release
+
+手动发布 Release：在仓库 Actions 页选择「Build & Release」→「Run workflow」，或在本地执行 `git tag v1.0.0 && git push origin v1.0.0`。
 
 ## 项目结构
 

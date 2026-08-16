@@ -9,3 +9,6 @@ server/data/
 
 # 启动器本地配置（含本机项目路径，勿提交）
 launcher/launcher-config.json
+
+# 截图工具（本地临时，勿提交）
+.screenshot/

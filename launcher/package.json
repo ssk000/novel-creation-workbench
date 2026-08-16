@@ -28,7 +28,7 @@
       "icon": "build/icon.ico"
     },
     "portable": {
-      "artifactName": "小说创作工作台-启动器.exe"
+      "artifactName": "NovelWorkbench-Launcher.exe"
     }
   }
 }

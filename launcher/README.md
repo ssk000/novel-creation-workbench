@@ -4,7 +4,7 @@
 
 ## 使用
 
-- **便携版 EXE**：双击 `dist\小说创作工作台-启动器.exe`（绿色免安装，配置存于 `%APPDATA%\NovelWorkbench\`）。
+- **便携版 EXE**：双击 `dist\NovelWorkbench-Launcher.exe`（绿色免安装，配置存于 `%APPDATA%\NovelWorkbench\`）。
 - **源码运行**：`cd launcher && npm install && npm start`。
 - **重新打包 EXE**：`npm run build:win`（产物输出到 `dist\`，需先 `npm install`）。
 
