@@ -46,7 +46,7 @@ npm start
 
 ### 桌面启动器（推荐）
 
-封装了一个 Electron 桌面启动器，双击即可启动/停止服务并自动打开浏览器，免命令行：
+封装了一个 Electron 桌面应用，**网页端已内嵌在窗口里**（分页「创作台 / 服务」），双击即用、自动启动服务，免命令行、无需外部浏览器：
 
 - **便携版 EXE**：`launcher\dist\NovelWorkbench-Launcher.exe`（绿色免安装）
 - 源码运行：`cd launcher && npm install && npm start`

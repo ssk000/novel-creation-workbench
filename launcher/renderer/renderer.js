@@ -3,6 +3,12 @@ const $ = (id) => document.getElementById(id);
 const basename = (p) => (p || '').split(/[\\/]/).filter(Boolean).pop() || p;
 
 const els = {
+  tabWorkbenchBtn: $('tabWorkbenchBtn'),
+  tabServerBtn: $('tabServerBtn'),
+  tabWorkbench: $('tabWorkbench'),
+  tabServer: $('tabServer'),
+  wb: $('wb'),
+  wbLoading: $('wbLoading'),
   statusPill: $('statusPill'),
   project: $('project'),
   browseBtn: $('browseBtn'),
@@ -11,7 +17,6 @@ const els = {
   startBtn: $('startBtn'),
   stopBtn: $('stopBtn'),
   openBtn: $('openBtn'),
-  autoOpen: $('autoOpen'),
   runtime: $('runtime'),
   rtStatus: $('rtStatus'),
   rtPid: $('rtPid'),
@@ -21,6 +26,34 @@ const els = {
 };
 
 let current = { running: false, url: null };
+let wbUrl = '';
+
+function switchTab(tab) {
+  const workbench = tab === 'workbench';
+  els.tabWorkbenchBtn.classList.toggle('active', workbench);
+  els.tabServerBtn.classList.toggle('active', !workbench);
+  els.tabWorkbench.classList.toggle('active', workbench);
+  els.tabServer.classList.toggle('active', !workbench);
+}
+
+function updateWorkbench(s) {
+  const running = !!s.running;
+  if (running && s.url) {
+    if (wbUrl !== s.url) {
+      els.wb.src = s.url;
+      wbUrl = s.url;
+    }
+    els.wbLoading.style.display = 'none';
+    els.wb.style.display = '';
+  } else {
+    els.wb.style.display = 'none';
+    wbUrl = '';
+    els.wbLoading.style.display = '';
+    els.wbLoading.textContent = running
+      ? '服务启动中，请稍候…'
+      : '服务未启动。请切换到「⚙️ 服务」页，选择项目目录后点击「▶ 启动」。';
+  }
+}
 
 function renderStatus(s) {
   if (!s) return;
@@ -46,6 +79,8 @@ function renderStatus(s) {
       els.rtUrl.removeAttribute('href');
     }
   }
+
+  updateWorkbench(current);
 
   if (s.log) {
     els.log.textContent = s.log.join('\n');
@@ -91,7 +126,6 @@ function collectConfig() {
   return {
     projectDir: els.project.value,
     port: els.port.value ? Number(els.port.value) : null,
-    autoOpen: els.autoOpen.checked,
   };
 }
 
@@ -118,11 +152,13 @@ async function loadProjects() {
 async function init() {
   const cfg = await window.nw.loadConfig();
   els.port.value = cfg.port || '3001';
-  els.autoOpen.checked = cfg.autoOpen !== false;
 
   await loadProjects();
   renderStatus(await window.nw.status());
 }
+
+els.tabWorkbenchBtn.addEventListener('click', () => switchTab('workbench'));
+els.tabServerBtn.addEventListener('click', () => switchTab('server'));
 
 els.browseBtn.addEventListener('click', async () => {
   const dir = await window.nw.pickFolder();
@@ -164,8 +200,6 @@ els.clearLogBtn.addEventListener('click', () => {
 
 window.nw.onStatus(renderStatus);
 
-['port', 'autoOpen'].forEach((k) => {
-  els[k].addEventListener('change', persist);
-});
+els.port.addEventListener('change', persist);
 
 init();

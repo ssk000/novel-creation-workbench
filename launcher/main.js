@@ -8,38 +8,35 @@ process.env.NW_LAUNCHER_CONFIG = path.join(app.getPath('userData'), 'launcher-co
 
 const controller = harness.createController();
 let win = null;
-let autoOpen = true;
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 760,
-    height: 640,
-    minWidth: 620,
-    minHeight: 520,
-    title: '小说创作工作台 启动器',
+    width: 1440,
+    height: 900,
+    minWidth: 1100,
+    minHeight: 700,
+    title: '小说创作工作台',
     backgroundColor: '#0f141a',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
+      webviewTag: true,
     },
     show: false,
   });
   win.loadFile(path.join(__dirname, 'renderer', 'index.html'));
   win.once('ready-to-show', () => {
     win.show();
-    console.log('[NovelWorkbench Launcher] 窗口已就绪');
+    console.log('[NovelWorkbench] 窗口已就绪');
   });
   win.on('closed', () => { win = null; });
 }
 
-// 把控制器状态推送给渲染层；首次解析到 URL 时按需自动打开浏览器
-controller.onChange((snapshot, change) => {
+// 把控制器状态推送给渲染层（内嵌 webview 据此加载工作台）
+controller.onChange((snapshot) => {
   if (win && !win.isDestroyed()) {
     win.webContents.send('nw:status', snapshot);
-  }
-  if (change === 'url' && autoOpen && snapshot.url) {
-    shell.openExternal(snapshot.url);
   }
 });
 
@@ -49,7 +46,6 @@ ipcMain.handle('nw:recordRecent', (_e, dir) => harness.recordRecentProject(dir))
 ipcMain.handle('nw:loadConfig', () => harness.loadConfig());
 ipcMain.handle('nw:saveConfig', (_e, cfg) => harness.saveConfig(cfg));
 ipcMain.handle('nw:start', (_e, opts) => {
-  autoOpen = !opts || opts.autoOpen !== false;
   const result = controller.start(opts);
   if (result && result.ok && opts && opts.projectDir) {
     harness.recordRecentProject(opts.projectDir);
@@ -72,6 +68,16 @@ ipcMain.handle('nw:openBrowser', (_e, url) => {
 
 app.whenReady().then(() => {
   createWindow();
+  // 自动启动服务，供内嵌 webview 加载工作台
+  const cfg = harness.loadConfig();
+  const r = controller.start({
+    projectDir: (cfg && cfg.projectDir) || harness.defaultProjectDir(),
+    port: cfg && cfg.port ? Number(cfg.port) : null,
+  });
+  if (r && !r.ok) {
+    console.log('[NovelWorkbench] 自动启动失败:', r.error);
+  }
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });

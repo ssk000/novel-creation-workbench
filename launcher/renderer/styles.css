@@ -28,47 +28,76 @@ html, body {
 body {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
-.topbar {
+/* ---------- 顶部分页栏 ---------- */
+.tabbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
+  gap: 20px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--border);
   background: linear-gradient(180deg, #131a23 0%, #0f141a 100%);
+  flex: 0 0 auto;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
   background: linear-gradient(135deg, #2563eb, #7c3aed);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 17px;
 }
 
 .brand h1 {
   margin: 0;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
-.subtitle {
-  margin: 2px 0 0;
-  font-size: 12px;
+.tabs {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.tabbtn {
+  border: none;
+  background: transparent;
   color: var(--text-dim);
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s, color 0.12s;
 }
 
-.status-wrap { display: flex; align-items: center; }
+.tabbtn:hover {
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+.tabbtn.active {
+  background: var(--panel-2);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.status-wrap { display: flex; align-items: center; flex-shrink: 0; }
 
 .pill {
   padding: 6px 14px;
@@ -88,7 +117,39 @@ body {
   color: var(--text-dim);
 }
 
-main {
+/* ---------- 分页内容 ---------- */
+.tabpage {
+  display: none;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.tabpage.active {
+  display: flex;
+}
+
+/* ---------- 创作台（内嵌 webview） ---------- */
+.wb {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: var(--bg);
+}
+
+.wb-hint {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  font-size: 14px;
+  text-align: center;
+  padding: 40px;
+}
+
+/* ---------- 服务页 ---------- */
+.server-main {
   flex: 1;
   overflow: auto;
   padding: 18px 20px;
@@ -172,17 +233,6 @@ button {
   white-space: nowrap;
   flex-shrink: 0;
 }
-
-.check {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--text-dim);
-  cursor: pointer;
-  white-space: nowrap;
-}
-.check input { width: auto; margin: 0; }
 
 button:disabled { opacity: 0.4; cursor: not-allowed; }
 
